@@ -45,7 +45,7 @@
 
 using namespace std;
 
-double separazione(){
+double separation(){
 	//creation of file
 	TFile *pr = new TFile("C:/Users/Matteo Lezzi/Desktop/Matteo/Universita/Magistrale/laboratorio_di_analisi_dati/separazione massa/conex_eposlhc_1301560476_100.root");
 	TFile *ir = new TFile("C:/Users/Matteo Lezzi/Desktop/Matteo/Universita/Magistrale/laboratorio_di_analisi_dati/separazione massa/conex_eposlhc_625923668_5600.root");
