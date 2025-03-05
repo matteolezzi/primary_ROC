@@ -46,6 +46,7 @@
 using namespace std;
 
 double separazione(){
+	//creation of file
 	TFile *pr = new TFile("C:/Users/Matteo Lezzi/Desktop/Matteo/Universita/Magistrale/laboratorio_di_analisi_dati/separazione massa/conex_eposlhc_1301560476_100.root");
 	TFile *ir = new TFile("C:/Users/Matteo Lezzi/Desktop/Matteo/Universita/Magistrale/laboratorio_di_analisi_dati/separazione massa/conex_eposlhc_625923668_5600.root");
 	TFile *ph = new TFile("C:/Users/Matteo Lezzi/Desktop/Matteo/Universita/Magistrale/laboratorio_di_analisi_dati/separazione massa/conex_eposlhc_2086832343_0.root");
@@ -53,12 +54,12 @@ double separazione(){
 	TFile *pr_ene = new TFile("C:/Users/Matteo Lezzi/Desktop/Matteo/Universita/Magistrale/laboratorio_di_analisi_dati/separazione massa/protoni_10000.root");
 
 	int bins=300;
-	
+	// define tree 
 	TTree *ShowerPR = (TTree*)pr->Get("Shower");
 	TTree *ShowerIR = (TTree*)ir->Get("Shower");
 	TTree *ShowerPH = (TTree*)ph->Get("Shower");
 	
-		
+	//create graph
 	TH1F *hpr = new TH1F("hpr","hpr",bins,500,2000);
 	TH1F *hir = new TH1F("hir","hir",bins,500,2000);
 	TH1F *hph= new TH1F("hph","hph",bins,500,2000);
@@ -72,7 +73,7 @@ double separazione(){
 	TH1F *hph2 = new TH1F("hph2","hph2;x_max",bins,500,2000);
 	
 	
-	
+	#define variables
 	float x_max_ir=0.;
 	float x_max_pr=0.;
 	float x_max_ph=0.;
@@ -87,10 +88,11 @@ double separazione(){
 	float sigma1 = 20.0;
 	float sigma2 = 40.0;
 	
-	
+	//define tree branches
 	ShowerPR->SetBranchAddress("Xmax", &x_max_pr);
 	ShowerIR->SetBranchAddress("Xmax", &x_max_ir);
 	ShowerPH->SetBranchAddress("Xmax", &x_max_ph);
+	//load values from branches
 	for(int i=0; i<ShowerPR->GetEntries(); i++){
 		ShowerPR->GetEntry(i);
 		ShowerIR->GetEntry(i);
@@ -202,18 +204,19 @@ double separazione(){
     rms_pr_2 = hpr2->GetRMS();
     rms_fe_2 = hir2->GetRMS();
     rms_ph_2 = hph2->GetRMS();
-    
-    double * eff_ir = hir->GetIntegral(); //questo definisce un array che a seconda del bin in cui lo calcolo mi da l'area sottesa da 0 fino a quel bin
-    double * eff_pr = hpr->GetIntegral();
+    //calculate cumulative efficiency
+    double * eff_ir = hir->GetIntegral(); 
+    double * eff_pr = hpr->GetIntegral(); 
     double * eff_ph = hph->GetIntegral();
     
-    double * eff_ir_2 = hir2->GetIntegral(); //questo definisce un array che a seconda del bin in cui lo calcolo mi da l'area sottesa da 0 fino a quel bin
+    double * eff_ir_2 = hir2->GetIntegral();
     double * eff_pr_2 = hpr2->GetIntegral();
     double * eff_ph_2 = hph2->GetIntegral();
     double  inv_eff_pr[300] = {0.};
     double  inv_eff_ph[300] = {0.};
 	double  inv_eff_pr_2[300] = {0.};
     double  inv_eff_ph_2[300] = {0.};
+	//calculate inverse cumulative efficency for inverse ROC curve
 	for(int i=0; i<bins;i++){
     inv_eff_pr[i] = 1. - eff_pr[i];
 	inv_eff_ph[i] = 1. - eff_ph[i];	
@@ -258,11 +261,11 @@ double separazione(){
     TGraph * inv_cont_pr_ph = new TGraph(300,inv_eff_pr,inv_eff_ph);
     
     TGraph * inv_cont_pr_ph_2 = new TGraph(bins,inv_eff_pr_2,inv_eff_ph_2);
-    //si dimensiona a 300 perché ho visto che l'nX max è al massimo 220, 300 per abbondare
+    
     float MuPR[300] ={0.};
     float MuIR[300] ={0.};
     float MuPH[300] ={0.};
-    //qui invece è dimensione 5000 perché 5000 sono gli eventi che stiamo considerando
+    //5000 events
 	float MuPR_ground[5000]={0.};
     float MuIR_ground[5000]={0.};
     float MuPH_ground[5000]={0.};
@@ -284,7 +287,7 @@ double separazione(){
     int nXPR=0;
     int nXIR=0;
     int nXPH=0;
-    
+    //define branches
     ShowerPR->SetBranchAddress("Mu",&MuPR);
 	ShowerIR->SetBranchAddress("Mu",&MuIR);
 	ShowerPH->SetBranchAddress("Mu",&MuPH);
@@ -299,55 +302,6 @@ double separazione(){
 	
 	
 	
-	for(int i=0;i<ShowerPR->GetEntries(); i++){
-		ShowerPR->GetEntry(i);
-		if(x_max_pr<2000&&x_max_pr>0&&zenithPR>0){
-			MuPR_ground[i]=log10(MuPR[nXPR-1]);
-			MuPR_ground_nolog[i]= MuPR[nXPR-1];
-			//cout<<MuPR_ground_nolog[i]<<endl;
-			XPR_max[i]=x_max_pr;
-			
-			
-			
-			//cout<<"xpr_max "<<XPR_max[i]<<"MuPR_ground "<<MuPR_ground[i]<<endl;
-		}
-		
-		
-	}
-	
-	
-	for(int i=0;i<ShowerIR->GetEntries(); i++){
-		ShowerIR->GetEntry(i);
-		if(x_max_ir<2000&&x_max_ir>0&&zenithIR>0){
-			MuIR_ground[i]=log10(MuIR[nXIR-1]);
-			XIR_max[i]=x_max_ir;
-			
-			
-//			cout<<"xir_max "<<XIR_max[i]<<"MuIR_ground "<<MuIR_ground[i]<<endl;
-		}
-		
-		
-	}
-	
-	for(int i=0;i<ShowerPH->GetEntries(); i++){
-		ShowerPH->GetEntry(i);
-		if(x_max_ph<2000&&x_max_ph>0&&zenithPH>0){
-			MuPH_ground[i]=log10(MuPH[nXPH-1]);
-			XPH_max[i]=x_max_ph;
-			
-			
-	//		cout<<"xph_max "<<XPH_max[i]<<"MuPH_ground "<<MuPH_ground[i]<<endl;
-		}
-		
-		
-	}
-	
-	TCanvas * muoni = new TCanvas("muoni","muoni",1000,600);
-	
-    TGraph *gpr = new TGraph(5000,MuPR_ground,XPR_max); 
-    TGraph *gir = new TGraph(5000,MuIR_ground,XIR_max);
-    TGraph *gph = new TGraph(5000,MuPH_ground,XPH_max);
-    
     gpr->SetMarkerColor(2);
     gpr->SetMarkerStyle(20);
 
@@ -377,55 +331,53 @@ double separazione(){
 	
 	
 	
-	cout<<"il fattore di merito tra protone e ferro e' "<<MF_prot_fe<<endl;    
-    cout<<"il fattore di merito tra protone e fotone e' "<<MF_prot_gamma<<endl;    
-	cout<<"il fattore di merito tra ferro e fotone e' "<<MF_fe_gamma<<endl; 
+	cout<<"the merit factor between proton and iron is "<<MF_prot_fe<<endl;    
+    cout<<"the merit factor between proton and photon "<<MF_prot_gamma<<endl;    
+	cout<<"the merit factor between iron and photon is "<<MF_fe_gamma<<endl; 
 
-	cout<<"il fattore di merito tra protone e ferro con 20 g/cm^2 e' "<<MF_prot_fe_1<<endl;    
-    cout<<"il fattore di merito tra protone e fotone 20 g/cm^2 e' "<<MF_prot_gamma_1<<endl;    
-	cout<<"il fattore di merito tra ferro e fotone 20 g/cm^2 e' "<<MF_fe_gamma_1<<endl; 
+	cout<<"the merit factor between proton and iron with smeared data (20 g/cm^2) is "<<MF_prot_fe_1<<endl;    
+    cout<<"the merit factor between proton and photon with smeared data (20 g/cm^2) is "<<MF_prot_gamma_1<<endl;    
+	cout<<"the merit factor between iron and iron photon smeared data (20 g/cm^2) is "<<MF_fe_gamma_1<<endl; 
 
-	cout<<"il fattore di merito tra protone e ferro 40 g/cm^2 e' "<<MF_prot_fe_2<<endl;    
-    cout<<"il fattore di merito tra protone e fotone 40 g/cm^2 e' "<<MF_prot_gamma_2<<endl;    
-	cout<<"il fattore di merito tra ferro e fotone 40 g/cm^2 e' "<<MF_fe_gamma_2<<endl; 
+	cout<<"the merit factor between proton and iron with smeared data (40 g/cm^2) is "<<MF_prot_fe_2<<endl;    
+    cout<<"the merit factor between proton and photon with smeared data (40 g/cm^2) is  "<<MF_prot_gamma_2<<endl;    
+	cout<<"the merit factor between iron and photon with smeared data (20 g/cm^2) is "<<MF_fe_gamma_2<<endl; 
 	
-	TCanvas *contaminazione = new TCanvas("contaminazione","contaminazione",1000,600);
-	cont_pr_fe->SetTitle("ROC Contaminazione; Eff X ; Eff Y");
+	TCanvas *contamination = new TCanvas("contamination","contamination",1000,600);
+	cont_pr_fe->SetTitle("ROC Contamination; Eff X ; Eff Y");
 	cont_pr_fe->Draw();
 	cont_ph_pr->SetLineColor(2);
 	cont_ph_pr->Draw("same");
 	cont_ph_fe->SetLineColor(3);
 	cont_ph_fe->Draw("same");	
 	
-	TCanvas *contaminazione_40 = new TCanvas("contaminazione 40 ","contaminazione 40",1000,600);
+	TCanvas *contamination_40 = new TCanvas("contamination 40 ","contamination 40",1000,600);
 	cont_pr_fe_2->Draw();
 	cont_ph_pr_2->SetLineColor(2);
 	cont_ph_pr_2->Draw("same");
 	cont_ph_fe_2->SetLineColor(3);
 	cont_ph_fe_2->Draw("same");	
-	TCanvas *contaminazione_confronto = new TCanvas("contaminazione confronto","contaminazione confronto",1000,600);
-	cont_pr_fe_2->SetTitle("ROC Contaminazione Confronto protone in ferro; Eff X ; Eff Y");
+	TCanvas *contamination_confront = new TCanvas("contamination confront","contamination confront",1000,600);
+	cont_pr_fe_2->SetTitle("ROC Contaminazione Confron proton in iron; Eff X ; Eff Y");
 	cont_pr_fe_2->SetLineStyle(2);
 	cont_pr_fe_2->Draw();
 	cont_pr_fe->Draw("same");
 	
-	TCanvas *inv_contaminazione_confronto = new TCanvas("contamazione confronto inv","contamazione confronto inv",1000,600);
+	TCanvas *inv_contamination_confront = new TCanvas("contamination confront inv","contamination confront inv",1000,600);
 	inv_cont_pr_ph->Draw();
 	inv_cont_pr_ph_2->SetLineStyle(2);
 	inv_cont_pr_ph_2->Draw("same");
 	
 	
     TGraph * eval_cont_ph_pr_2 = new TGraph(bins,inv_eff_ph_2,inv_eff_pr_2);
-    cout<<"contaminazione reale 16%: "<<eval_cont_ph_pr_2->Eval(0.16)<<endl;
-    cout<<"contaminazione reale 50%: "<<eval_cont_ph_pr_2->Eval(0.50)<<endl;
-	cout<<"contaminazione reale 84%: "<<eval_cont_ph_pr_2->Eval(0.84)<<endl;
+    cout<<"real contamination 16%: "<<eval_cont_ph_pr_2->Eval(0.16)<<endl;
+    cout<<"real contamination 50%: "<<eval_cont_ph_pr_2->Eval(0.50)<<endl;
+	cout<<"real contamination 84%: "<<eval_cont_ph_pr_2->Eval(0.84)<<endl;
 
 	TGraph * eval_cont_ph_pr = new TGraph(bins,inv_eff_ph,inv_eff_pr);
-    cout<<"contaminazione ideale 16%: "<<eval_cont_ph_pr->Eval(0.16)<<endl;
-    cout<<"contaminazione ideale 50%: "<<eval_cont_ph_pr->Eval(0.50)<<endl;
-	cout<<"contaminazione ideale 84%: "<<eval_cont_ph_pr->Eval(0.84)<<endl;	
-	
-	cout<<"Muoni"<<MuPR_ground<<endl; 
+    cout<<"ideal contamination 16%: "<<eval_cont_ph_pr->Eval(0.16)<<endl;
+    cout<<"ideal contamination 50%: "<<eval_cont_ph_pr->Eval(0.50)<<endl;
+	cout<<"ideal contamination 84%: "<<eval_cont_ph_pr->Eval(0.84)<<endl;	
 	
 	
 }
