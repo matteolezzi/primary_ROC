@@ -261,15 +261,7 @@ double separation(){
     TGraph * inv_cont_pr_ph = new TGraph(300,inv_eff_pr,inv_eff_ph);
     
     TGraph * inv_cont_pr_ph_2 = new TGraph(bins,inv_eff_pr_2,inv_eff_ph_2);
-    
-    float MuPR[300] ={0.};
-    float MuIR[300] ={0.};
-    float MuPH[300] ={0.};
-    //5000 events
-	float MuPR_ground[5000]={0.};
-    float MuIR_ground[5000]={0.};
-    float MuPH_ground[5000]={0.};
-    float MuPR_ground_nolog[5000]={0.};
+
     
     float XPR_max[5000]={0.};
     float XIR_max[5000]={0.};
