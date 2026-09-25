@@ -306,7 +306,9 @@ double separation(){
 	cout<<"the merit factor between proton and iron with smeared data (40 g/cm^2) is "<<MF_prot_fe_2<<endl;    
     cout<<"the merit factor between proton and photon with smeared data (40 g/cm^2) is  "<<MF_prot_gamma_2<<endl;    
 	cout<<"the merit factor between iron and photon with smeared data (20 g/cm^2) is "<<MF_fe_gamma_2<<endl; 
-	
+
+
+	// this is shown in github
 	TCanvas *contamination = new TCanvas("contamination","contamination",1000,600);
 	cont_pr_fe->SetTitle("ROC Contamination; Eff X ; Eff Y");
 	cont_pr_fe->Draw();
