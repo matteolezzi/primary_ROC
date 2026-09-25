@@ -287,18 +287,7 @@ double separation(){
     int nXPR=0;
     int nXIR=0;
     int nXPH=0;
-    //define branches
-    ShowerPR->SetBranchAddress("Mu",&MuPR);
-	ShowerIR->SetBranchAddress("Mu",&MuIR);
-	ShowerPH->SetBranchAddress("Mu",&MuPH);
-	
-	ShowerPR->SetBranchAddress("nX",&nXPR);
-	ShowerIR->SetBranchAddress("nX",&nXIR);
-	ShowerPH->SetBranchAddress("nX",&nXPH);
-	
-	ShowerPR->SetBranchAddress("zenith",&zenithPR);
-	ShowerIR->SetBranchAddress("zenith",&zenithIR);
-	ShowerPH->SetBranchAddress("zenith",&zenithPH);
+
 	
 	
 	
