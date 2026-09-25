@@ -262,25 +262,8 @@ double separation(){
     
     TGraph * inv_cont_pr_ph_2 = new TGraph(bins,inv_eff_pr_2,inv_eff_ph_2);
 
-    
-    float XPR_max[5000]={0.};
-    float XIR_max[5000]={0.};
-    float XPH_max[5000]={0.};
-	
-    float XPR_max[5000]={0.};
-    float XIR_max[5000]={0.};
-    float XPH_max[5000]={0.};
-    
-    float zenithPR=0;
-    float zenithIR=0;
-    float zenithPH=0;
-    
-	   
-    int nXPR=0;
-    int nXIR=0;
-    int nXPH=0;
 
-	
+
 	
 	
     gpr->SetMarkerColor(2);
